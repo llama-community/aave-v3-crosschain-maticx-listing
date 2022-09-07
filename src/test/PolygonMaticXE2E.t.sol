@@ -178,103 +178,103 @@ contract PolygonMaticXE2ETest is Test {
       expectedAssetsEmode
     );
 
-    // _validatePoolActionsPostListing(allConfigsAfter);
+    _validatePoolActionsPostListing(allConfigsAfter);
   }
 
-  // function _validatePoolActionsPostListing(
-  //   ReserveConfig[] memory allReservesConfigs
-  // ) internal {
-  //   address aSTMATIC = AaveV3Helpers
-  //     ._findReserveConfig(allReservesConfigs, 'stMATIC', false)
-  //     .aToken;
-  //   address vSTMATIC = AaveV3Helpers
-  //     ._findReserveConfig(allReservesConfigs, 'stMATIC', false)
-  //     .variableDebtToken;
-  //   address sSTMATIC = AaveV3Helpers
-  //     ._findReserveConfig(allReservesConfigs, 'stMATIC', false)
-  //     .stableDebtToken;
-  //   address vDAI = AaveV3Helpers
-  //     ._findReserveConfig(allReservesConfigs, 'DAI', false)
-  //     .variableDebtToken;
+  function _validatePoolActionsPostListing(
+    ReserveConfig[] memory allReservesConfigs
+  ) internal {
+    address aMATICX = AaveV3Helpers
+      ._findReserveConfig(allReservesConfigs, 'MaticX', false)
+      .aToken;
+    address vMATICX = AaveV3Helpers
+      ._findReserveConfig(allReservesConfigs, 'MaticX', false)
+      .variableDebtToken;
+    address sMATICX = AaveV3Helpers
+      ._findReserveConfig(allReservesConfigs, 'MaticX', false)
+      .stableDebtToken;
+    address vDAI = AaveV3Helpers
+      ._findReserveConfig(allReservesConfigs, 'DAI', false)
+      .variableDebtToken;
 
-  //   // Deposit stMATIC from stMATIC Whale and receive aSTMATIC
-  //   AaveV3Helpers._deposit(
-  //     vm,
-  //     STMATIC_WHALE,
-  //     STMATIC_WHALE,
-  //     STMATIC,
-  //     666 ether,
-  //     true,
-  //     aSTMATIC
-  //   );
+    // Deposit MATICX from MATICX Whale and receive aMATICX
+    AaveV3Helpers._deposit(
+      vm,
+      MATICX_WHALE,
+      MATICX_WHALE,
+      MATICX,
+      666 ether,
+      true,
+      aMATICX
+    );
 
-  //   // Testing borrowing of DAI against stMATIC as collateral
-  //   AaveV3Helpers._borrow(
-  //     vm,
-  //     STMATIC_WHALE,
-  //     STMATIC_WHALE,
-  //     DAI,
-  //     2 ether,
-  //     2,
-  //     vDAI
-  //   );
+    // Testing borrowing of DAI against MATICX as collateral
+    AaveV3Helpers._borrow(
+      vm,
+      MATICX_WHALE,
+      MATICX_WHALE,
+      DAI,
+      2 ether,
+      2,
+      vDAI
+    );
 
-  //   // Expecting to Revert with error code '30' ('BORROWING_NOT_ENABLED') for stable rate borrowing
-  //   // https://github.com/aave/aave-v3-core/blob/master/contracts/protocol/libraries/helpers/Errors.sol#L39
-  //   vm.expectRevert(bytes('30'));
-  //   AaveV3Helpers._borrow(
-  //     vm,
-  //     STMATIC_WHALE,
-  //     STMATIC_WHALE,
-  //     STMATIC,
-  //     10 ether,
-  //     1,
-  //     sSTMATIC
-  //   );
-  //   vm.stopPrank();
+    // Expecting to Revert with error code '30' ('BORROWING_NOT_ENABLED') for stable rate borrowing
+    // https://github.com/aave/aave-v3-core/blob/master/contracts/protocol/libraries/helpers/Errors.sol#L39
+    vm.expectRevert(bytes('30'));
+    AaveV3Helpers._borrow(
+      vm,
+      MATICX_WHALE,
+      MATICX_WHALE,
+      MATICX,
+      10 ether,
+      1,
+      sMATICX
+    );
+    vm.stopPrank();
 
-  //   // Expecting to Revert with error code '30' ('BORROWING_NOT_ENABLED') for variable rate borrowing
-  //   // https://github.com/aave/aave-v3-core/blob/master/contracts/protocol/libraries/helpers/Errors.sol#L39
-  //   vm.expectRevert(bytes('30'));
-  //   AaveV3Helpers._borrow(
-  //     vm,
-  //     STMATIC_WHALE,
-  //     STMATIC_WHALE,
-  //     STMATIC,
-  //     10 ether,
-  //     2,
-  //     vSTMATIC
-  //   );
-  //   vm.stopPrank();
+    // Expecting to Revert with error code '30' ('BORROWING_NOT_ENABLED') for variable rate borrowing
+    // https://github.com/aave/aave-v3-core/blob/master/contracts/protocol/libraries/helpers/Errors.sol#L39
+    vm.expectRevert(bytes('30'));
+    AaveV3Helpers._borrow(
+      vm,
+      MATICX_WHALE,
+      MATICX_WHALE,
+      MATICX,
+      10 ether,
+      2,
+      vMATICX
+    );
+    vm.stopPrank();
 
-  //   // Transferring some extra DAI to stMATIC whale for repaying back the loan.
-  //   vm.startPrank(DAI_WHALE);
-  //   IERC20(DAI).transfer(STMATIC_WHALE, 300 ether);
-  //   vm.stopPrank();
+    // Transferring some extra DAI to MATICX whale for repaying back the loan.
+    vm.startPrank(DAI_WHALE);
+    IERC20(DAI).transfer(MATICX_WHALE, 300 ether);
+    vm.stopPrank();
 
-  //   // Not possible to borrow and repay when vdebt index doesn't changing, so moving ahead 10000s
-  //   skip(10000);
+    // Not possible to borrow and repay when vdebt index doesn't changing, so moving ahead 10000s
+    skip(10000);
 
-  //   // Repaying back DAI loan
-  //   AaveV3Helpers._repay(
-  //     vm,
-  //     STMATIC_WHALE,
-  //     STMATIC_WHALE,
-  //     DAI,
-  //     IERC20(DAI).balanceOf(STMATIC_WHALE),
-  //     2,
-  //     vDAI,
-  //     true
-  //   );
+    // Repaying back DAI loan
+    AaveV3Helpers._repay(
+      vm,
+      MATICX_WHALE,
+      MATICX_WHALE,
+      DAI,
+      IERC20(DAI).balanceOf(MATICX_WHALE),
+      2,
+      vDAI,
+      true
+    );
 
-  //   // Withdrawing stMATIC
-  //   AaveV3Helpers._withdraw(
-  //     vm,
-  //     STMATIC_WHALE,
-  //     STMATIC_WHALE,
-  //     STMATIC,
-  //     type(uint256).max,
-  //     aSTMATIC
-  //   );
-  // }
+    // Withdrawing MATICX
+    AaveV3Helpers._withdraw(
+      vm,
+      MATICX_WHALE,
+      MATICX_WHALE,
+      MATICX,
+      type(uint256).max,
+      aMATICX
+    );
+  }
 }
