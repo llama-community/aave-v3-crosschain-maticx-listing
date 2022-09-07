@@ -7,7 +7,6 @@ update:; forge update
 
 # Build & test
 build  :; forge build --sizes
-
 test   :; forge test -vvv
 
 # Deploy L2 proposals
