@@ -60,18 +60,8 @@ contract MaticXPayload is IProposalGenericExecutor {
   // Liquidation Protocol Fee
   uint256 public constant LIQ_PROTOCOL_FEE = 2000; // 20%
 
-  // eMode category
+  // eMode category 2: 'MATIC correlated'
   uint8 public constant EMODE_CATEGORY = 2;
-
-  // TODO: Remove new eMode Category once stMATIC goes live
-  uint16 public constant EMODE_LTV = 9250; // 92.5%
-  uint16 public constant EMODE_LIQ_THRESHOLD = 9500; // 95%
-  uint16 public constant EMODE_LIQ_BONUS = 10100; // 1%
-  string public constant EMODE_LABEL = 'MATIC correlated';
-
-  // TODO: Remove this once stMATIC goes live
-  // Other assets affected
-  address public constant WMATIC = 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270;
 
   function execute() external override {
     // ----------------------------
@@ -131,20 +121,7 @@ contract MaticXPayload is IProposalGenericExecutor {
     // Set Liquidation Protocol Fee
     configurator.setLiquidationProtocolFee(UNDERLYING, LIQ_PROTOCOL_FEE);
 
-    // TODO: Remove this configuration once stMATIC goes live
-    // Create new EMode Category
-    configurator.setEModeCategory(
-      EMODE_CATEGORY,
-      EMODE_LTV,
-      EMODE_LIQ_THRESHOLD,
-      EMODE_LIQ_BONUS,
-      address(0),
-      EMODE_LABEL
-    );
-
     // Set the Asset EMode Category ID 2 for MaticX
     configurator.setAssetEModeCategory(UNDERLYING, EMODE_CATEGORY);
-    // TODO: Remove this configuration once stMATIC goes live
-    configurator.setAssetEModeCategory(WMATIC, EMODE_CATEGORY);
   }
 }

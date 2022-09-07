@@ -53,7 +53,49 @@ contract PolygonMaticXE2ETest is Test {
     return input[64:];
   }
 
+  // Execute StMatic Proposal to set eMode Category of 2
+  // Can be removed once stMATIC actually executes on Mainnet
+  function executeStMaticProposal() private {
+    // stMATIC listing Proposal ID
+    uint256 proposalId = 99;
+
+    // execute proposal and record logs so we can extract the emitted StateSynced event
+    vm.selectFork(mainnetFork);
+    vm.recordLogs();
+    GovHelpers.passVoteAndExecute(vm, proposalId);
+
+    Vm.Log[] memory entries = vm.getRecordedLogs();
+    assertEq(
+      keccak256('StateSynced(uint256,address,bytes)'),
+      entries[2].topics[0]
+    );
+    assertEq(address(uint160(uint256(entries[2].topics[2]))), FX_CHILD_ADDRESS);
+
+    // mock the receive on l2 with the data emitted on StateSynced
+    vm.selectFork(polygonFork);
+    vm.startPrank(BRIDGE_ADMIN);
+    IStateReceiver(FX_CHILD_ADDRESS).onStateReceive(
+      uint256(entries[2].topics[1]),
+      this._cutBytes(entries[2].data)
+    );
+    vm.stopPrank();
+
+    // execute proposal on l2
+    vm.warp(
+      block.timestamp + IBridgeExecutor(POLYGON_BRIDGE_EXECUTOR).getDelay() + 1
+    );
+
+    // execute the proposal
+    IBridgeExecutor(POLYGON_BRIDGE_EXECUTOR).execute(
+      IBridgeExecutor(POLYGON_BRIDGE_EXECUTOR).getActionsSetCount() - 1
+    );
+  }
+
   function testProposalE2E() public {
+    // Execute StMatic Proposal to set eMode Category of 2
+    // Can be removed once stMATIC actually executes on Mainnet
+    executeStMaticProposal();
+
     vm.selectFork(polygonFork);
 
     // we get all configs to later on check that payload only changes MaticX
@@ -168,9 +210,10 @@ contract PolygonMaticXE2ETest is Test {
       })
     );
 
-    string[] memory expectedAssetsEmode = new string[](2);
+    string[] memory expectedAssetsEmode = new string[](3);
     expectedAssetsEmode[0] = 'WMATIC';
-    expectedAssetsEmode[1] = 'MaticX';
+    expectedAssetsEmode[1] = 'stMATIC';
+    expectedAssetsEmode[2] = 'MaticX';
 
     AaveV3Helpers._validateAssetsOnEmodeCategory(
       2,
