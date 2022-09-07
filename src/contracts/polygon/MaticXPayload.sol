@@ -32,7 +32,6 @@ contract MaticXPayload is IProposalGenericExecutor {
   string public constant SDTOKEN_NAME = 'Aave Polygon Stable Debt MATICX';
   string public constant SDTOKEN_SYMBOL = 'stableDebtPolMATICX';
 
-  // TODO: Confirm the price feed
   address public constant PRICE_FEED =
     0x5d37E4b374E6907de8Fc7fb33EE3b0af403C7403;
 
