@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import 'forge-std/console.sol';
-import {Script} from 'forge-std/Script.sol';
-import {AaveGovernanceV2, IExecutorWithTimelock} from 'aave-address-book/AaveGovernanceV2.sol';
+import '@forge-std/console.sol';
+import {Script} from '@forge-std/Script.sol';
+import {AaveGovernanceV2, IExecutorWithTimelock} from '@aave-address-book/AaveGovernanceV2.sol';
 
 library DeployL1PolygonProposal {
   address internal constant CROSSCHAIN_FORWARDER_POLYGON =
@@ -38,22 +38,11 @@ library DeployL1PolygonProposal {
   }
 }
 
-contract DeployMai is Script {
+contract DeployMaticX is Script {
   function run() external {
     vm.startBroadcast();
     DeployL1PolygonProposal._deployL1Proposal(
-      0x83Fba23163662149B33DBC05cF1312DF6dcBA72b,
-      0xf6e50d5a3f824f5ab4ffa15fb79f4fa1871b8bf7af9e9b32c1aaaa9ea633006d
-    );
-    vm.stopBroadcast();
-  }
-}
-
-contract DeployFrax is Script {
-  function run() external {
-    vm.startBroadcast();
-    DeployL1PolygonProposal._deployL1Proposal(
-      0xA2f3F9534E918554A9e95cfa7dC4F763d02A0859,
+      address(0), // TODO: replace with l2 payload address
       bytes32(0) // TODO: replace with actual ipfshash
     );
     vm.stopBroadcast();
